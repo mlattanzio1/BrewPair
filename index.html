@@ -4,137 +4,14 @@
   <meta charset="UTF-8">
   <title>Brew Pair</title>
   <link href='http://fonts.googleapis.com/css?family=Montserrat:700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="style.css">
+  <link type="image/png" href="images/icon.png" rel="icon">
 </head>
 <body>
-
-<style>
-  
-body {
-  background-color: #EFEFEF;
-  font-family: 'Montserrat';
-  font-weight: 700;
-  text-align: center;
-}
-
-input {
-  padding: 10px;
-  font-family: 'Montserrat';
-  font-size: 18px;
-  border: 2px solid #C6C8CA;
-  color: #C6C8CA;
-}
-
-input:focus {
-    outline:none;
-}
-
-::-webkit-input-placeholder {
-   color: #C6C8CA;
-}
-
-:-moz-placeholder { /* Firefox 18- */
-   color: #C6C8CA;  
-}
-
-::-moz-placeholder {  /* Firefox 19+ */
-   color: #C6C8CA;  
-}
-
-:-ms-input-placeholder {  
-   color: #C6C8CA;  
-}
-
-h1 {
-  margin: 0;
-  font-size: 20px;
-  color: #00CCD6;
-}
-
-h1 span {
-  border-bottom: 2px solid #FFD900;
-}
-
-h2 {
-  margin-top: 25px;
-  color: #00CCD6;
-  font-size: 26px;
-}
-
-#success h2 {
-  margin-top: 25px;
-  margin-bottom: 5px;
-}
-
-#sorry h2 {
-  margin-top: 25px;
-  margin-bottom: 5px;
-}
-
-h3 {
-  margin: 20px;
-  padding: 15px 5px 5px 5px;
-  color: #00CCD6;
-  font-size: 14px;
-}
-
-.beerImage {
-  width: 100%;
-  height: 300px;
-  background: center center ;
-  background-color: #EFEFEF;
-    background-blend-mode: multiply;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-}
-
-.beer {
-  display: inline-block;
-  width: 200px;
-  height: 400px;
-  text-align: center;
-  padding-left: 10px;
-  padding-right: 10px;
-}
-
-.beer img {
-  width: 100%;
-}
-
-/* Responsive CSS */
-
-/* Tablet */
-
-@media (max-width: 980px) {
-
-  .logo {
-    width: 80%;
-  }
-
-}
-
-/* Phone */
-
-@media (max-width: 480px) {
-
-  .logo {
-    width: 100%;
-  }
-
-}
-
-</style>
 
 <img class="logo" src="images/logo.png" alt="BrewPair">
 
 <h1>A crafty to help pair your favourite foods with <span>Ontario Craft Beer.</span></h1>
-
-<!-- <form action="#">
-<h2>What are you eating?</h2>
-<input name="food" id="food" type="text" value="Ex: pizza, burgers, etc.">
-<input type="submit" value="GO!">
-</form> -->
 
 <div class="food">
   <h2>What are you eating?</h2>
@@ -150,94 +27,13 @@ h3 {
 <div id="beer">
 </div>
 
+<div class="footer">
+  <p>Designed by <a href="http://mlattanzio1.github.io/portfolio/">Matt Lattanzio</a></p>
+</div>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 
-<script>
-
-$(function() {
-
-var app = {};
-
-// AJAX request
-
-$.ajax({
-  url: 'http://lcboapi.com/products?where=is_ocb&per_page=100',
-  type: 'GET',
-  dataType: 'jsonp',
-  success: function(beer){
-    console.log(beer.result);
-    app.beers = beer.result;
-  }
-});
-
-    $('#food').on('change', function() {
-
-      // Get value for food input
-      var food = $(this).val();
-    
-      // Create boundary variable for food item
-      re = new RegExp("\\b" + food)
-      
-      // Find suggestions that match food item
-
-      var matchedBeers = [];
-      
-      $.each(app.beers, function(index,beer) {        
-             
-        var hasSuggestion = beer.serving_suggestion && beer.serving_suggestion.match(re);
-        var hasPicture = !!beer.image_thumb_url; // will be true or false
-        var duplicates = matchedBeers.filter(function(item){
-          return item.name === beer.name;
-        });
-        var isUnique = !duplicates.length;
-
-
-        if (hasSuggestion && hasPicture && isUnique) {
-          matchedBeers.push(beer);
-        } else {
-
-        // Empty success label
-        $('#success').empty();
-
-        // Add sorry label
-        var sorry = $('<h2>').text('Sorry, please try another food.');
-        $('#sorry').html(sorry);
-
-        }
-      
-      }); // end each
-
-      // Empty existing beer results
-      $('#beer').empty();
-
-      console.log(matchedBeers);
-
-      $.each(matchedBeers,function(i,piece){
-
-        // Empty sorry label
-        $('#sorry').empty();
-
-        // Success label
-        var success = $('<h2>').text('You should be drinking:');
-        $('#success').html(success);
-
-        // Add beer name
-        var name = $('<h3>').text(piece.name);
-
-        // Set thumbnail image as background image
-        var image = $('<div>').addClass('beerImage').css('background-image', 'url('+piece.image_thumb_url+')');
-
-        // Create beer divs
-        var selectedBeers = $('<div>').addClass('beer').append(name,image);
-        $('#beer').append(selectedBeers);
-
-      }); // end each
-
-    }); // end change
-
-});  // End of doc ready
-
-</script>
+<script src="app.js"></script>
   
 </body>
 </html>
