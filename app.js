@@ -6,11 +6,23 @@ app.getBeer = function(){
 
   $.ajax({
     url: 'http://lcboapi.com/products?where=is_ocb&per_page=100',
+    headers: { 'Authorization': 'MDoyNTUyZjBiNi0yYTJhLTExZTUtODFkNi1hM2RmZmU0ZjYwN2I6aVFkVkVrc294dk1LOGYzaDdpOHpwZlYxQ2N4V1V0SkdUSVRq' },
     type: 'GET',
     dataType: 'jsonp',
     success: function(beer){
-      console.log(beer.result);
       app.beers = beer.result;
+      $.ajax({
+        // Gets second page of results (only 148 beers total)
+        url: 'http://lcboapi.com/products?where=is_ocb&per_page=100&callback=jQuery110202786614007782191_1437587406535&_=1437587406536&page=2',
+        headers: { 'Authorization': 'MDoyNTUyZjBiNi0yYTJhLTExZTUtODFkNi1hM2RmZmU0ZjYwN2I6aVFkVkVrc294dk1LOGYzaDdpOHpwZlYxQ2N4V1V0SkdUSVRq' },
+        type: 'GET',
+        dataType: 'jsonp',
+        success: function(beer2){
+          // Combines both results into one variable
+          app.allBeers = beer.result.concat(beer2.result);
+          console.log(app.allBeers);
+        }
+      });
     }
   });
 
@@ -33,7 +45,7 @@ app.getFood = function(){
 
     var matchedBeers = [];
     
-    $.each(app.beers, function(index,beer) {        
+    $.each(app.allBeers, function(index,beer) {        
            
       var hasSuggestion = beer.serving_suggestion && beer.serving_suggestion.match(re);
       var hasPicture = !!beer.image_thumb_url; // will be true or false
@@ -74,14 +86,20 @@ app.getFood = function(){
       // Add beer name
       var name = $('<h3>').text(piece.name);
 
+      // Add tasting note to hover over beer image
+      var tasting_note = $('<p>').addClass('tasting').text(piece.tasting_note);
+
       // Set thumbnail image as background image
       var image = $('<div>').addClass('beerImage').css('background-image', 'url('+piece.image_thumb_url+')');
 
       // Create beer divs
-      var selectedBeers = $('<div>').addClass('beer').append(name,image);
+      var selectedBeers = $('<div>').addClass('beer').append(name,image,tasting_note);
+
       $('#beer').append(selectedBeers);
 
-    }); // end each
+
+
+    }); // end eachs
 
   }); // end change
 
